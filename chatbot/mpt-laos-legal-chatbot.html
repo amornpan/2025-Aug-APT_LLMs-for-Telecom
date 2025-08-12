@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPT Legal Assistant - ຜູ້ຊ່ວຍດ້ານກົດໝາຍແລະລະບຽບການ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #dc2626;
+            --accent-color: #fbbf24;
+            --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+        }
+        
+        body {
+            font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        .title-section h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .title-section p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .lang-btn:hover, .lang-btn.active {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .document-categories {
+            list-style: none;
+        }
+        
+        .category-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .category-item .icon {
+            font-size: 20px;
+        }
+        
+        .category-item .count {
+            margin-left: auto;
+            background: rgba(30, 58, 138, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .category-item:hover .count {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .chat-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .chat-header h2 {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafbfc;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            text-align: right;
+        }
+        
+        .message.bot {
+            text-align: left;
+        }
+        
+        .message-content {
+            display: inline-block;
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+        }
+        
+        .user .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .bot .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .document-reference {
+            background: #f0f4f8;
+            border-left: 4px solid var(--primary-color);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .document-reference .doc-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .document-reference .doc-info {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .document-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        .document-link:hover {
+            text-decoration: underline;
+        }
+        
+        .suggested-questions {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .suggested-questions h4 {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .suggestion-chip {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .suggestion-chip:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .input-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: scale(1.05);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .search-filters {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            padding: 10px;
+        }
+        
+        .typing-indicator.active {
+            display: flex;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-15px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">🏛️</div>
+                <div class="title-section">
+                    <h1>ກະຊວງເຕັກໂນໂລຊີ ແລະ ການສື່ສານ</h1>
+                    <p>Ministry of Post and Telecommunications - Legal Document Assistant</p>
+                </div>
+            </div>
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="setLanguage('lo')">ລາວ</button>
+                <button class="lang-btn" onclick="setLanguage('en')">English</button>
+                <button class="lang-btn" onclick="setLanguage('th')">ไทย</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>📚 <span id="docCategoriesTitle">ປະເພດເອກສານ</span></h3>
+            <ul class="document-categories">
+                <li class="category-item" onclick="filterByCategory('law')">
+                    <span class="icon">⚖️</span>
+                    <span class="cat-name" data-category="law">ກົດໝາຍ</span>
+                    <span class="count">45</span>
+                </li>
+                <li class="category-item" onclick="filterByCategory('decree')">
+                    <span class="icon">📜</span>
+                    <span class="cat-name" data-category="decree">ດຳລັດ</span>
+                    <span class="count">32</span>
+                </li>
+                <li class="category-item" onclick="filterByCategory('regulation')">
+                    <span class="icon">📋</span>
+                    <span class="cat-name" data-category="regulation">ລະບຽບການ</span>
+                    <span class="count">58</span>
+                </li>
+                <li class="category-item" onclick="filterByCategory('agreement')">
+                    <span class="icon">🤝</span>
+                    <span class="cat-name" data-category="agreement">ຂໍ້ຕົກລົງ</span>
+                    <span class="count">27</span>
+                </li>
+                <li class="category-item" onclick="filterByCategory('announcement')">
+                    <span class="icon">📢</span>
+                    <span class="cat-name" data-category="announcement">ແຈ້ງການ</span>
+                    <span class="count">89</span>
+                </li>
+                <li class="category-item" onclick="filterByCategory('guideline')">
+                    <span class="icon">📖</span>
+                    <span class="cat-name" data-category="guideline">ຄູ່ມື</span>
+                    <span class="count">15</span>
+                </li>
+            </ul>
+            
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label id="yearLabel">ປີ:</label>
+                    <select class="filter-select" id="yearFilter">
+                        <option value="">ທັງໝົດ</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label id="departmentLabel">ພະແນກ:</label>
+                    <select class="filter-select" id="departmentFilter">
+                        <option value="">ທັງໝົດ</option>
+                        <option value="telecom">ໂທລະຄົມ</option>
+                        <option value="post">ໄປສະນີ</option>
+                        <option value="ict">ICT</option>
+                        <option value="broadcast">ກະຈາຍສຽງ</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">266</div>
+                    <div class="label" id="totalDocsLabel">ເອກສານທັງໝົດ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value">12</div>
+                    <div class="label" id="newThisMonthLabel">ໃໝ່ເດືອນນີ້</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-section">
+            <div class="chat-header">
+                <h2 id="chatTitle">ຜູ້ຊ່ວຍຄົ້ນຫາເອກສານກົດໝາຍ</h2>
+                <p id="chatDesc">ຖາມຂ້ອຍກ່ຽວກັບກົດໝາຍ, ດຳລັດ, ລະບຽບການ ແລະ ເອກສານທາງການອື່ນໆ</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <span id="welcomeMessage">ສະບາຍດີ! ຂ້ອຍແມ່ນຜູ້ຊ່ວຍຄົ້ນຫາເອກສານກົດໝາຍຂອງກະຊວງເຕັກໂນໂລຊີ ແລະ ການສື່ສານ. 
+                        
+ຂ້ອຍສາມາດຊ່ວຍເຈົ້າ:
+- 🔍 ຄົ້ນຫາກົດໝາຍ ແລະ ລະບຽບການທີ່ກ່ຽວຂ້ອງ
+- 📖 ອະທິບາຍເນື້ອໃນຂອງເອກສານ
+- 🎯 ແນະນຳເອກສານທີ່ເຈົ້າຕ້ອງການ
+- ⏰ ຕິດຕາມເອກສານໃໝ່ລ່າສຸດ</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+            
+            <div class="suggested-questions">
+                <h4 id="suggestedTitle">ຄຳຖາມທີ່ແນະນຳ:</h4>
+                <div class="suggestion-chips" id="suggestionChips">
+                    <div class="suggestion-chip" onclick="askQuestion(this)">ກົດໝາຍວ່າດ້ວຍໂທລະຄົມນາຄົມ</div>
+                    <div class="suggestion-chip" onclick="askQuestion(this)">ການຂໍອະນຸຍາດເປີດບໍລິການ</div>
+                    <div class="suggestion-chip" onclick="askQuestion(this)">ລະບຽບການ 5G</div>
+                    <div class="suggestion-chip" onclick="askQuestion(this)">ດຳລັດລ່າສຸດ 2025</div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="ພິມຄຳຖາມຂອງເຈົ້າກ່ຽວກັບເອກສານກົດໝາຍ..." onkeypress="handleKeyPress(event)">
+                    <div class="input-buttons">
+                        <button class="btn btn-secondary" onclick="attachFile()">📎</button>
+                        <button class="btn btn-secondary" onclick="startVoice()">🎤</button>
+                        <button class="btn btn-primary" onclick="sendMessage()">
+                            <span id="sendBtnText">ສົ່ງ</span> →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentLanguage = 'lo';
+        let currentCategory = '';
+        
+        const translations = {
+            lo: {
+                docCategories: 'ປະເພດເອກສານ',
+                categories: {
+                    law: 'ກົດໝາຍ',
+                    decree: 'ດຳລັດ',
+                    regulation: 'ລະບຽບການ',
+                    agreement: 'ຂໍ້ຕົກລົງ',
+                    announcement: 'ແຈ້ງການ',
+                    guideline: 'ຄູ່ມື'
+                },
+                yearLabel: 'ປີ:',
+                departmentLabel: 'ພະແນກ:',
+                totalDocs: 'ເອກສານທັງໝົດ',
+                newThisMonth: 'ໃໝ່ເດືອນນີ້',
+                chatTitle: 'ຜູ້ຊ່ວຍຄົ້ນຫາເອກສານກົດໝາຍ',
+                chatDesc: 'ຖາມຂ້ອຍກ່ຽວກັບກົດໝາຍ, ດຳລັດ, ລະບຽບການ ແລະ ເອກສານທາງການອື່ນໆ',
+                placeholder: 'ພິມຄຳຖາມຂອງເຈົ້າກ່ຽວກັບເອກສານກົດໝາຍ...',
+                send: 'ສົ່ງ',
+                suggestedTitle: 'ຄຳຖາມທີ່ແນະນຳ:',
+                welcome: `ສະບາຍດີ! ຂ້ອຍແມ່ນຜູ້ຊ່ວຍຄົ້ນຫາເອກສານກົດໝາຍຂອງກະຊວງເຕັກໂນໂລຊີ ແລະ ການສື່ສານ.
+
+ຂ້ອຍສາມາດຊ່ວຍເຈົ້າ:
+- 🔍 ຄົ້ນຫາກົດໝາຍ ແລະ ລະບຽບການທີ່ກ່ຽວຂ້ອງ
+- 📖 ອະທິບາຍເນື້ອໃນຂອງເອກສານ
+- 🎯 ແນະນຳເອກສານທີ່ເຈົ້າຕ້ອງການ
+- ⏰ ຕິດຕາມເອກສານໃໝ່ລ່າສຸດ`
+            },
+            en: {
+                docCategories: 'Document Categories',
+                categories: {
+                    law: 'Laws',
+                    decree: 'Decrees',
+                    regulation: 'Regulations',
+                    agreement: 'Agreements',
+                    announcement: 'Announcements',
+                    guideline: 'Guidelines'
+                },
+                yearLabel: 'Year:',
+                departmentLabel: 'Department:',
+                totalDocs: 'Total Documents',
+                newThisMonth: 'New This Month',
+                chatTitle: 'Legal Document Search Assistant',
+                chatDesc: 'Ask me about laws, decrees, regulations and other official documents',
+                placeholder: 'Type your question about legal documents...',
+                send: 'Send',
+                suggestedTitle: 'Suggested Questions:',
+                welcome: `Hello! I'm the legal document assistant for the Ministry of Post and Telecommunications.
+
+I can help you:
+- 🔍 Search for relevant laws and regulations
+- 📖 Explain document contents
+- 🎯 Recommend documents you need
+- ⏰ Track latest documents`
+            },
+            th: {
+                docCategories: 'ประเภทเอกสาร',
+                categories: {
+                    law: 'กฎหมาย',
+                    decree: 'พระราชกฤษฎีกา',
+                    regulation: 'ระเบียบ',
+                    agreement: 'ข้อตกลง',
+                    announcement: 'ประกาศ',
+                    guideline: 'คู่มือ'
+                },
+                yearLabel: 'ปี:',
+                departmentLabel: 'แผนก:',
+                totalDocs: 'เอกสารทั้งหมด',
+                newThisMonth: 'ใหม่เดือนนี้',
+                chatTitle: 'ผู้ช่วยค้นหาเอกสารกฎหมาย',
+                chatDesc: 'ถามฉันเกี่ยวกับกฎหมาย พระราชกฤษฎีกา ระเบียบ และเอกสารทางการอื่นๆ',
+                placeholder: 'พิมพ์คำถามเกี่ยวกับเอกสารกฎหมาย...',
+                send: 'ส่ง',
+                suggestedTitle: 'คำถามแนะนำ:',
+                welcome: `สวัสดี! ฉันคือผู้ช่วยค้นหาเอกสารกฎหมายของกระทรวงเทคโนโลยีและการสื่อสาร
+
+ฉันสามารถช่วยคุณ:
+- 🔍 ค้นหากฎหมายและระเบียบที่เกี่ยวข้อง
+- 📖 อธิบายเนื้อหาเอกสาร
+- 🎯 แนะนำเอกสารที่คุณต้องการ
+- ⏰ ติดตามเอกสารใหม่ล่าสุด`
+            }
+        };
+        
+        // Sample document database with RAG simulation
+        const documentDatabase = {
+            laws: [
+                {
+                    id: 'LAW001',
+                    title: {
+                        lo: 'ກົດໝາຍວ່າດ້ວຍໂທລະຄົມນາຄົມ ສະບັບປັບປຸງ 2024',
+                        en: 'Telecommunications Law (Revised 2024)',
+                        th: 'กฎหมายโทรคมนาคม (ฉบับปรับปรุง 2024)'
+                    },
+                    category: 'law',
+                    year: 2024,
+                    department: 'telecom',
+                    summary: {
+                        lo: 'ກົດໝາຍສະບັບນີ້ກຳນົດຫຼັກການ, ລະບຽບການ ແລະ ມາດຕະການໃນການຄຸ້ມຄອງ, ນຳໃຊ້ ແລະ ພັດທະນາໂທລະຄົມນາຄົມ...',
+                        en: 'This law defines principles, regulations and measures for managing, using and developing telecommunications...',
+                        th: 'กฎหมายฉบับนี้กำหนดหลักการ ระเบียบ และมาตรการในการจัดการ ใช้และพัฒนาโทรคมนาคม...'
+                    }
+                },
+                {
+                    id: 'DEC001',
+                    title: {
+                        lo: 'ດຳລັດວ່າດ້ວຍການອະນຸຍາດບໍລິການ 5G',
+                        en: 'Decree on 5G Service Licensing',
+                        th: 'พระราชกฤษฎีกาว่าด้วยการอนุญาตบริการ 5G'
+                    },
+                    category: 'decree',
+                    year: 2025,
+                    department: 'telecom',
+                    summary: {
+                        lo: 'ດຳລັດກຳນົດເງື່ອນໄຂ ແລະ ຂັ້ນຕອນການຂໍອະນຸຍາດເປີດບໍລິການ 5G ໃນ ສປປ ລາວ...',
+                        en: 'Decree establishing conditions and procedures for 5G service licensing in Lao PDR...',
+                        th: 'พระราชกฤษฎีกากำหนดเงื่อนไขและขั้นตอนการขออนุญาตเปิดบริการ 5G ในสปป.ลาว...'
+                    }
+                },
+                {
+                    id: 'REG001',
+                    title: {
+                        lo: 'ລະບຽບການປົກປ້ອງຂໍ້ມູນສ່ວນຕົວ',
+                        en: 'Personal Data Protection Regulations',
+                        th: 'ระเบียบการคุ้มครองข้อมูลส่วนบุคคล'
+                    },
+                    category: 'regulation',
+                    year: 2024,
+                    department: 'ict',
+                    summary: {
+                        lo: 'ລະບຽບການນີ້ກຳນົດມາດຕະການປົກປ້ອງຂໍ້ມູນສ່ວນຕົວຂອງບຸກຄົນໃນການນຳໃຊ້ບໍລິການດິຈິຕອນ...',
+                        en: 'These regulations establish measures for protecting personal data in digital services...',
+                        th: 'ระเบียบนี้กำหนดมาตรการคุ้มครองข้อมูลส่วนบุคคลในการใช้บริการดิจิทัล...'
+                    }
+                }
+            ]
+        };
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+            
+            // Update UI texts
+            const t = translations[lang];
+            document.getElementById('docCategoriesTitle').textContent = t.docCategories;
+            document.getElementById('yearLabel').textContent = t.yearLabel;
+            document.getElementById('departmentLabel').textContent = t.departmentLabel;
+            document.getElementById('totalDocsLabel').textContent = t.totalDocs;
+            document.getElementById('newThisMonthLabel').textContent = t.newThisMonth;
+            document.getElementById('chatTitle').textContent = t.chatTitle;
+            document.getElementById('chatDesc').textContent = t.chatDesc;
+            document.getElementById('chatInput').placeholder = t.placeholder;
+            document.getElementById('sendBtnText').textContent = t.send;
+            document.getElementById('suggestedTitle').textContent = t.suggestedTitle;
+            
+            // Update category names
+            document.querySelectorAll('.cat-name').forEach(el => {
+                const category = el.getAttribute('data-category');
+                el.textContent = t.categories[category];
+            });
+            
+            // Update suggested questions
+            updateSuggestedQuestions(lang);
+        }
+        
+        function updateSuggestedQuestions(lang) {
+            const suggestions = {
+                lo: [
+                    'ກົດໝາຍວ່າດ້ວຍໂທລະຄົມນາຄົມ',
+                    'ການຂໍອະນຸຍາດເປີດບໍລິການ',
+                    'ລະບຽບການ 5G',
+                    'ດຳລັດລ່າສຸດ 2025'
+                ],
+                en: [
+                    'Telecommunications Law',
+                    'Service License Application',
+                    '5G Regulations',
+                    'Latest Decrees 2025'
+                ],
+                th: [
+                    'กฎหมายโทรคมนาคม',
+                    'การขออนุญาตเปิดบริการ',
+                    'ระเบียบ 5G',
+                    'พระราชกฤษฎีกาล่าสุด 2025'
+                ]
+            };
+            
+            const chipsContainer = document.getElementById('suggestionChips');
+            chipsContainer.innerHTML = '';
+            suggestions[lang].forEach(q => {
+                const chip = document.createElement('div');
+                chip.className = 'suggestion-chip';
+                chip.textContent = q;
+                chip.onclick = function() { askQuestion(this); };
+                chipsContainer.appendChild(chip);
+            });
+        }
+        
+        function filterByCategory(category) {
+            currentCategory = category;
+            // Highlight selected category
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.style.background = '';
+                item.style.color = '';
+            });
+            event.currentTarget.style.background = 'var(--primary-color)';
+            event.currentTarget.style.color = 'white';
+            
+            // Add filtered message
+            const categoryName = translations[currentLanguage].categories[category];
+            addMessage(`${categoryName}`, 'user');
+            
+            setTimeout(() => {
+                const response = searchDocuments(category);
+                addMessage(response, 'bot', true);
+            }, 1000);
+        }
+        
+        function searchDocuments(query) {
+            // Simulate RAG search
+            const relevantDocs = documentDatabase.laws.filter(doc => {
+                return doc.category === query || 
+                       doc.title[currentLanguage].toLowerCase().includes(query.toLowerCase()) ||
+                       doc.summary[currentLanguage].toLowerCase().includes(query.toLowerCase());
+            });
+            
+            if (relevantDocs.length > 0) {
+                let response = currentLanguage === 'lo' ? 
+                    `ພົບເອກສານທີ່ກ່ຽວຂ້ອງ ${relevantDocs.length} ລາຍການ:\n\n` :
+                    currentLanguage === 'en' ?
+                    `Found ${relevantDocs.length} related documents:\n\n` :
+                    `พบเอกสารที่เกี่ยวข้อง ${relevantDocs.length} รายการ:\n\n`;
+                
+                relevantDocs.forEach(doc => {
+                    response += `
+                        <div class="document-reference">
+                            <div class="doc-title">${doc.title[currentLanguage]}</div>
+                            <div class="doc-info">ID: ${doc.id} | ${currentLanguage === 'lo' ? 'ປີ' : currentLanguage === 'en' ? 'Year' : 'ปี'}: ${doc.year}</div>
+                            <p>${doc.summary[currentLanguage]}</p>
+                            <a href="#" class="document-link" onclick="viewDocument('${doc.id}')">
+                                📄 ${currentLanguage === 'lo' ? 'ເບິ່ງເອກສານ' : currentLanguage === 'en' ? 'View Document' : 'ดูเอกสาร'}
+                            </a>
+                        </div>
+                    `;
+                });
+                
+                return response;
+            } else {
+                return currentLanguage === 'lo' ? 
+                    'ບໍ່ພົບເອກສານທີ່ກ່ຽວຂ້ອງ. ກະລຸນາລອງຄົ້ນຫາດ້ວຍຄຳອື່ນ.' :
+                    currentLanguage === 'en' ?
+                    'No related documents found. Please try different keywords.' :
+                    'ไม่พบเอกสารที่เกี่ยวข้อง กรุณาลองค้นหาด้วยคำอื่น';
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            document.getElementById('typingIndicator').classList.add('active');
+            
+            // Simulate RAG processing
+            setTimeout(() => {
+                document.getElementById('typingIndicator').classList.remove('active');
+                const response = processQuery(message);
+                addMessage(response, 'bot', true);
+            }, 1500);
+        }
+        
+        function processQuery(query) {
+            const lowerQuery = query.toLowerCase();
+            
+            // Check for specific document types
+            if (lowerQuery.includes('5g') || lowerQuery.includes('໕ຈີ')) {
+                return searchDocuments('5g');
+            } else if (lowerQuery.includes('telecom') || lowerQuery.includes('ໂທລະຄົມ') || lowerQuery.includes('โทรคม')) {
+                return searchDocuments('telecom');
+            } else if (lowerQuery.includes('data') || lowerQuery.includes('ຂໍ້ມູນ') || lowerQuery.includes('ข้อมูล')) {
+                return searchDocuments('data');
+            }
+            
+            // Default response
+            const responses = {
+                lo: `ຂ້ອຍກຳລັງຄົ້ນຫາເອກສານທີ່ກ່ຽວຂ້ອງກັບ "${query}"...
+                
+ເພື່ອໃຫ້ການຄົ້ນຫາມີປະສິດທິພາບ, ກະລຸນາລະບຸ:
+- ປະເພດເອກສານ (ກົດໝາຍ, ດຳລັດ, ລະບຽບການ)
+- ປີທີ່ອອກເອກສານ
+- ຫົວຂໍ້ທີ່ສົນໃຈ
+
+ຫຼື ເລືອກປະເພດເອກສານຈາກເມນູດ້ານຊ້າຍ`,
+                en: `I'm searching for documents related to "${query}"...
+                
+For better search results, please specify:
+- Document type (law, decree, regulation)
+- Year of publication
+- Topic of interest
+
+Or select a document category from the left menu`,
+                th: `ฉันกำลังค้นหาเอกสารที่เกี่ยวข้องกับ "${query}"...
+                
+เพื่อผลการค้นหาที่ดีขึ้น กรุณาระบุ:
+- ประเภทเอกสาร (กฎหมาย, พระราชกฤษฎีกา, ระเบียบ)
+- ปีที่ออกเอกสาร
+- หัวข้อที่สนใจ
+
+หรือเลือกประเภทเอกสารจากเมนูด้านซ้าย`
+            };
+            
+            return responses[currentLanguage];
+        }
+        
+        function addMessage(text, sender, isHTML = false) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (isHTML) {
+                contentDiv.innerHTML = text;
+            } else {
+                contentDiv.textContent = text;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function askQuestion(chip) {
+            const question = chip.textContent;
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function attachFile() {
+            alert(currentLanguage === 'lo' ? 
+                'ຄຸນສົມບັດອັບໂຫຼດເອກສານຈະມີໃນເວີຊັ່ນຕໍ່ໄປ' :
+                currentLanguage === 'en' ?
+                'File upload feature coming soon' :
+                'ฟีเจอร์อัปโหลดไฟล์จะมาเร็วๆ นี้');
+        }
+        
+        function startVoice() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = currentLanguage === 'lo' ? 'lo-LA' : 
+                                  currentLanguage === 'th' ? 'th-TH' : 'en-US';
+                recognition.start();
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('chatInput').value = transcript;
+                };
+            } else {
+                alert('Voice input not supported in this browser');
+            }
+        }
+        
+        function viewDocument(docId) {
+            event.preventDefault();
+            const doc = documentDatabase.laws.find(d => d.id === docId);
+            if (doc) {
+                const message = currentLanguage === 'lo' ?
+                    `ກຳລັງເປີດເອກສານ: ${doc.title[currentLanguage]}...` :
+                    currentLanguage === 'en' ?
+                    `Opening document: ${doc.title[currentLanguage]}...` :
+                    `กำลังเปิดเอกสาร: ${doc.title[currentLanguage]}...`;
+                alert(message);
+            }
+        }
+        
+        // Initialize
+        updateSuggestedQuestions('lo');
+    </script>
+</body>
+</html>
