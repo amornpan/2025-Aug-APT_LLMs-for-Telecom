@@ -36,7 +36,15 @@ This comprehensive training course introduces participants to Large Language Mod
 
 ### Day 4: Ethics & Future
 - **Module 7:** Ethical Considerations and Compliance
+  - Bias detection and mitigation strategies
+  - GDPR, CCPA, and regional compliance frameworks
+  - Practical bias testing workshop with Python
+  - Ethical AI governance implementation
 - **Module 8:** Future Trends and Innovations
+  - 5G/6G and AI convergence
+  - Edge computing and IoT applications
+  - Quantum computing impact
+  - Group project presentations
 
 ## 🛠️ Technical Requirements
 
@@ -51,22 +59,29 @@ This comprehensive training course introduces participants to Large Language Mod
 - **Pre-configured notebooks** with telecommunications datasets
 - **Vector databases** (free-tier services)
 
-### Recommended Setup:
+### Course Repository Structure:
 ```
-📁 Course Materials/
-├── 📂 Module_1_Introduction/
-├── 📂 Module_2_Telecom_Fundamentals/
-├── 📂 Module_3_Technical_Deep_Dive/
-├── 📂 Module_4_RAG_Systems/
-├── 📂 Module_5_Implementation/
-├── 📂 Module_6_Workshop/
-├── 📂 Module_7_Ethics/
-├── 📂 Module_8_Future_Trends/
-├── 📂 Labs/
-│   ├── 🔗 Colab_Notebooks/
-│   ├── 📊 Datasets/
-│   └── 🧪 Exercises/
-└── 📂 Projects/
+📁 2025-Aug-APT_LLMs-for-Telecom/
+├── 📂 Day_1_Foundations/
+│   ├── Module_1_Introduction/
+│   ├── Module_2_Telecom_Fundamentals/
+│   └── Module_3_Technical_Deep_Dive/
+├── 📂 Day_2_RAG_Implementation/
+│   ├── Module_4_RAG_Systems/
+│   └── Module_5_Implementation/
+├── 📂 Day_3_Practical_Workshop/
+│   └── Module_6_Workshop/
+├── 📂 Day_4_Ethics_and_Future/
+│   ├── Module_7_Ethics/
+│   │   ├── README.md
+│   │   └── bias_detection_workshop.py
+│   ├── Module_8_Future_Trends/
+│   │   └── README.md
+│   └── Group_Projects/
+│       └── project_guidelines.md
+├── 📂 chatbot/
+├── 📂 tmd-earthquake-server-1.0/
+└── README.md
 ```
 
 ## 👨‍🏫 Instructors
@@ -100,11 +115,15 @@ This comprehensive training course introduces participants to Large Language Mod
 1. **Google Colab Setup** - Environment configuration
 2. **Vector Embeddings** - Implementation using free-tier services
 3. **Basic RAG System** - Building from scratch
+4. **Bias Detection Workshop** - Identify and measure bias in telecom AI systems
+5. **Compliance Audit** - GDPR and AI ethics assessment
 
-### Major Workshop:
+### Major Workshops:
 - **RAG-Powered Chatbot** - Customer support automation
 - **Knowledge Base Development** - Telecom document processing
 - **Real-world Testing** - Telecommunication scenario validation
+- **Ethical AI Implementation** - Bias mitigation and fairness testing
+- **Group Project Development** - End-to-end LLM solution for telecom
 
 ## 📊 Assessment & Projects
 
@@ -160,9 +179,11 @@ This comprehensive training course introduces participants to Large Language Mod
 
 - **Internet Connectivity:** Stable connection required for all lab exercises
 - **Language:** Course conducted in English
-- **Materials:** All course materials provided digitally
+- **Materials:** All course materials provided digitally via this repository
 - **Prerequisites:** Bring laptop/device capable of running Google Colab
 - **Networking:** Lunch breaks and evening sessions for professional networking
+- **Day 4 Content:** Complete modules for Ethics, Compliance, and Future Trends now available
+- **Project Templates:** Group project guidelines and templates provided in Day_4_Ethics_and_Future/Group_Projects/
 
 ---
 
